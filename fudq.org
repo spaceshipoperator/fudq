@@ -1,16 +1,25 @@
-Starting with [[http://blog.refractalize.org/post/3141970594/warden-and-sinatra][one of]] the simplest [[https://github.com/hassox/warden/wiki/Examples][examples]] using [[https://github.com/hassox/warden/wiki][warden]] (for user authentification) with [[http://www.sinatrarb.com/][sinatra]], [[https://github.com/spaceshipoperator/fudq][fudq]] intends to be nothing more than fundamentally users, datasources and queries.  
+* fudq
+
+Starting with [[https://gist.github.com/1327195][one of]] the simplest [[https://github.com/hassox/warden/wiki/Examples][examples]] using [[https://github.com/hassox/warden/wiki][warden]] (for user authentication) with [[http://www.sinatrarb.com/][sinatra]],
+#+begin_src sh :exports none
+echo "tmp/*" >> .gitignore
+mkdir tmp
+git clone https://gist.github.com/8043506.git tmp/gist
+cp tmp/gist/gistfile1.rb fudq.rb
+#+end_src
+
+[[https://github.com/spaceshipoperator/fudq][fudq]] intends to be nothing more than fundamentally users, datasources and queries.
 
 More specifically:
 
-A user owns datasources and queries against those datasources. 
+A user can create datasources and modify and/or share datasources that he or she has created.
 
-A user can create datasources and modify datasources that he or she has created.
+A user can create queries and edit queries he or she has created against an available datasource.
 
-A datasource may be shared in one of two ways, by "definition" or by "use"
+A query may be shared in either of two ways, it's "definition" (read only text of the query itself) and/or its "results" (given optional input parameters)
 
-A user can create and edit queries against an available datasource.
-
-A query may be shared in either of two ways, it's "definition" (read only text of the query itself) and/or its "use" (results given optional input parameters)
-
-* tasks
-- [ ] get most basic user login/logout working per [[http://blog.refractalize.org/post/3141970594/warden-and-sinatra][our example]] 
+** tasks
+- [X] get most basic user login/logout working
+- [ ] resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
+- [ ] factor out database and user
+- [ ] document and define routes
