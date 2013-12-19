@@ -1,0 +1,16 @@
+Starting with [[http://blog.refractalize.org/post/3141970594/warden-and-sinatra][one of]] the simplest [[https://github.com/hassox/warden/wiki/Examples][examples]] using [[https://github.com/hassox/warden/wiki][warden]] (for user authentification) with [[http://www.sinatrarb.com/][sinatra]], [[https://github.com/spaceshipoperator/fudq][fudq]] intends to be nothing more than fundamentally users, datasources and queries.  
+
+More specifically:
+
+A user owns datasources and queries against those datasources. 
+
+A user can create datasources and modify datasources that he or she has created.
+
+A datasource may be shared in one of two ways, by "definition" or by "use"
+
+A user can create and edit queries against an available datasource.
+
+A query may be shared in either of two ways, it's "definition" (read only text of the query itself) and/or its "use" (results given optional input parameters)
+
+* tasks
+- [ ] get most basic user login/logout working per [[http://blog.refractalize.org/post/3141970594/warden-and-sinatra][our example]] 
