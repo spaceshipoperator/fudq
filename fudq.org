@@ -20,6 +20,7 @@ A query may be shared in either of two ways, it's "definition" (read only text o
 
 ** tasks
 - [X] get most basic user login/logout working
+- [X] factor out database and user (consider editing forked gist)
+- [ ] separate data(table) definitions from (object)model definitions
 - [ ] resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
-- [ ] factor out database and user
 - [ ] document and define routes
