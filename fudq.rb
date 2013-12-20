@@ -46,14 +46,19 @@ module App
     end
 
     get '/' do
-      slim 'h1 list queries'
+      @queries = DB[:queries]
+
+      slim :queries #'h1 list queries'
       # list all queries shared by other users
+      #   select * from queries where ...
       # if we've got a session user:
       #   list queries owned by the current user (each link to edit)
       #   link to new query
     end
 
     get '/q' do
+      @data_sources = DB[:data_sources]
+
       slim "h1 new query"
       # list available data source (each link to edit if owned by current user)
       #   one data source must be selected in order to save query
@@ -61,10 +66,10 @@ module App
     end
 
     get '/q/:q_id' do
-      slim "h1 edit query #{params[:q_id]}"
-      # link to delete query
+      slim "h1 view/edit query #{params[:q_id]}"
+      # link to execute query and delete query
       # post to save
-      #  query must belong to the current user before save!
+      #   query must belong to the current user before save!
     end
 
     get '/ds' do
@@ -72,13 +77,13 @@ module App
     end
 
     get '/ds/:d_id' do
-      slim "h1 edit data source #{params[:d_id]}"
+      slim "h1 view/edit data source #{params[:d_id]}"
       # link to disable data source
       # post to save
-      #  data source must belong to the current user before save
+      #   data source must belong to the current user before save
     end
 
-    get '/save/:obj/?:o_id?' do
+    get '/s/:obj/?:o_id?' do
       # this will be a post method once I get the forms wired up
       o_id = params[:o_id] ? "existing object (with id #{params[:o_id]})" : "new object"
       slim "save the #{o_id} of type: #{params[:obj]}"
@@ -106,8 +111,7 @@ builder = Rack::Builder.new do
     def authenticate!
       user = User.authenticate(
         params['user']['name'],
-        params['user']['password']
-        )
+        params['user']['password'])
       user.nil? ? fail!('Could not log in') : success!(user, 'Successfully logged in')
     end
   end
@@ -161,3 +165,14 @@ form method='post' action=url('/')
   input type='input' name='user[name]' placeholder='abc'
   input type='input' name='user[password]' placeholder='secret'
   input type='submit'
+@@ queries
+- unless @queries.empty?
+  table
+    - for query in @queries do
+      tr
+        td.name = query[:name]
+        td.description = query[:description]
+- else
+  p
+    | No queries found.  Feel free to create your own.
+      Thank you!
