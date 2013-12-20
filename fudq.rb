@@ -6,9 +6,9 @@ require './model.rb'
 
 module App
   class Session < Sinatra::Base
-    
+
     enable :inline_templates
-    
+
     get '/new' do
       slim :new
     end
@@ -31,32 +31,69 @@ module App
       flash.error = env['warden'].message
       redirect to '/new'
     end
-    
+
     not_found do
       redirect '/' # catch redirects to GET '/session'
     end
   end
 
   class Main < Sinatra::Base
-    
+
     enable :inline_templates
-    
-    get '/' do
-      slim 'h1 Index'
+
+    before do
+      env['warden'].authenticate! if request.path_info.split('/')[1]
     end
-    
+
+    get '/' do
+      slim 'h1 list queries'
+      # list all queries shared by other users
+      # if we've got a session user:
+      #   list queries owned by the current user (each link to edit)
+      #   link to new query
+    end
+
+    get '/q' do
+      slim "h1 new query"
+      # list available data source (each link to edit if owned by current user)
+      #   one data source must be selected in order to save query
+      #   link to new data source
+    end
+
+    get '/q/:q_id' do
+      slim "h1 edit query #{params[:q_id]}"
+      # link to delete query
+      # post to save
+      #  query must belong to the current user before save!
+    end
+
+    get '/ds' do
+      slim "h1 new data source"
+    end
+
+    get '/ds/:d_id' do
+      slim "h1 edit data source #{params[:d_id]}"
+      # link to disable data source
+      # post to save
+      #  data source must belong to the current user before save
+    end
+
+    get '/save/:obj/?:o_id?' do
+      # this will be a post method once I get the forms wired up
+      o_id = params[:o_id] ? "existing object (with id #{params[:o_id]})" : "new object"
+      slim "save the #{o_id} of type: #{params[:obj]}"
+    end
+
     get '/admin' do
-      env['warden'].authenticate!
       slim 'h1 Admin'
-    end    
+    end
   end
 end
-
 
 builder = Rack::Builder.new do
   Warden::Manager.serialize_into_session{|user| user.id }
   Warden::Manager.serialize_from_session{|id| User[id] }
-  
+
   Warden::Manager.before_failure do |env,opts|
     env['REQUEST_METHOD'] = 'POST'
   end
@@ -68,19 +105,19 @@ builder = Rack::Builder.new do
 
     def authenticate!
       user = User.authenticate(
-        params['user']['name'], 
+        params['user']['name'],
         params['user']['password']
         )
       user.nil? ? fail!('Could not log in') : success!(user, 'Successfully logged in')
     end
   end
-  
+
   use Rack::MethodOverride
   use Rack::Session::Cookie
   use Rack::Flash, accessorize: [:error, :success]
   use Warden::Manager do |config|
     config.scope_defaults :default,
-      strategies: [:password], 
+      strategies: [:password],
       action: 'session/unauthenticated'
     config.failure_app = self
   end
