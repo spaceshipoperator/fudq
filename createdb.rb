@@ -32,14 +32,20 @@ end
 DB[:users].insert(
   :name => 'admin',
   :password => 'hushhush')
+# :user_id == 1
+
+DB[:users].insert(
+  :name => 'test',
+  :password => 'secret')
+# :user_id == 2
 
 DB[:data_sources].insert(
   :user_id => 1,
   :name => 'fudq',
-  :description => 'the database that stores the users, data sources and queries managed by fudq',
+  :description => 'the database that stores the users, data sources and queries managed by the "system", fudq',
   :type => 'sqlite3',
   :definition => '{"file_location": "./fudq.rb"}',
-  :is_shared => 0)
+  :is_shared => 1)
 # data_source.id == 1
 
 DB[:queries].insert(
@@ -57,5 +63,14 @@ DB[:queries].insert(
   :name => 'all fudq queries',
   :description => 'all attributes of all queries managed by fudq',
   :definition => 'select * from queries',
-  :is_shared => 0)
+  :is_shared => 1)
 # query.id == 2
+
+DB[:queries].insert(
+  :data_source_id => 1,
+  :user_id => 2,
+  :name => 'test fudq',
+  :description => 'intended only for the "test" user, but since the selected data source is shared and owned by admin...well',
+  :definition => "select 'my private query!'",
+  :is_shared => 0)
+# query.id == 3

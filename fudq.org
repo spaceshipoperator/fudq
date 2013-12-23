@@ -19,9 +19,8 @@ A user can create queries and edit queries he or she has created against an avai
 A query may be shared in either of two ways, it's "definition" (read only text of the query itself) and/or its "results" (given optional input parameters)
 
 ** tasks
-- [X] get most basic user login/logout working
-- [X] factor out database and user (consider editing forked gist)
-- [ ] separate data(table) definitions from (object)model definitions
-- [ ] create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
-- [ ] resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
-- [ ] document and define routes
+*** DONE get list of queries owned by the current user and those shared by others displayed with links on index
+*** TODO make view/edit form for query
+*** TODO create /x execute query route, return results if permitted
+*** TODO create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
+*** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."

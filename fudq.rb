@@ -46,7 +46,9 @@ module App
     end
 
     get '/' do
-      @queries = DB[:queries]
+      user = env['warden'].user
+
+      @queries = user.nil? ? [] : user.queries_available
 
       slim :queries #'h1 list queries'
       # list all queries shared by other users
@@ -67,22 +69,27 @@ module App
 
     get '/q/:q_id' do
       slim "h1 view/edit query #{params[:q_id]}"
+      # get query from database,
+      # if current user is owner then the form is editable,
+      # if the query is shared the form is viewable
+      # otherwise, whoops
       # link to execute query and delete query
       # post to save
       #   query must belong to the current user before save!
     end
 
-    get '/ds' do
+    get '/d' do
       slim "h1 new data source"
     end
 
-    get '/ds/:d_id' do
+    get '/d/:d_id' do
       slim "h1 view/edit data source #{params[:d_id]}"
       # link to disable data source
       # post to save
       #   data source must belong to the current user before save
     end
 
+    #post
     get '/s/:obj/?:o_id?' do
       # this will be a post method once I get the forms wired up
       o_id = params[:o_id] ? "existing object (with id #{params[:o_id]})" : "new object"
@@ -170,7 +177,8 @@ form method='post' action=url('/')
   table
     - for query in @queries do
       tr
-        td.name = query[:name]
+        td.name
+          a href="/q/#{query[:id]}" = query[:name]
         td.description = query[:description]
 - else
   p
