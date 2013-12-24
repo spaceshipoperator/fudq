@@ -73,7 +73,8 @@ module App
     end
 
     get '/q/:q_id' do
-      slim "h1 view/edit query #{params[:q_id]}"
+      # get the query of course...
+      slim :query #"h1 view/edit query #{params[:q_id]}"
       # get query from database,
       # if current user is owner then the form is editable,
       # if the query is shared the form is viewable
@@ -94,11 +95,11 @@ module App
       #   data source must belong to the current user before save
     end
 
-    #post
-    get '/s/:obj/?:o_id?' do
+    post '/s/:obj/?:o_id?' do
       # this will be a post method once I get the forms wired up
       o_id = params[:o_id] ? "existing object (with id #{params[:o_id]})" : "new object"
-      slim "save the #{o_id} of type: #{params[:obj]}"
+      puts "save the #{o_id} of type: #{params[:obj]}"
+      redirect "/#{params[:obj]}/#{params[:o_id]}"
     end
 
     get '/x/:q_id' do
@@ -194,3 +195,9 @@ form method='post' action=url('/')
   p
     | No queries found.  Feel free to create your own.
       Thank you!
+@@ query
+form method='post' action=url('/s/q/1')
+  input type='input' name='query[name]' placeholder='meaningful name'
+  input type='input' name='query[description]' placeholder='useful description'
+  input type='text' name='query[definition]' placeholder="select 'foo' bar, 'baz' qux"
+  input type='submit'

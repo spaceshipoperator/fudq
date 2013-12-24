@@ -18,11 +18,11 @@ A user can create queries and edit queries he or she has created against an avai
 
 A query may be shared in either of two ways, it's "definition" (read only text of the query itself) and/or its "results" (given optional input parameters)
 
-Any shared queries against shared data sources are executable by everyone, viewable by authenticated users.
+Any shared queries against shared data sources are executable by everyone
 
 ** tasks
-*** DONE get list of queries owned by the current user and those shared by others displayed with links on index
 *** TODO make view/edit form for query
+*** TODO refactor Main before block, maybe instantiate user there
 *** TODO create /x execute query route, return results if permitted
 *** TODO create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
 *** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
