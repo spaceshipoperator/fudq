@@ -33,6 +33,10 @@ class User < Sequel::Model
     self.queries_available.select{|query| self.data_sources_available.include?(query.data_source)}
   end
 
+  def query_action
+    self.id.nil? ? 'x' : 'q'
+  end
+
   # validates_unique [:name]
   # not applicable until there's a new user process...forthcoming
 end

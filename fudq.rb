@@ -42,13 +42,17 @@ module App
     enable :inline_templates
 
     before do
-      env['warden'].authenticate! if request.path_info.split('/')[1]
+      public_actions = ['x']
+      request_action = request.path_info.split('/')[1]
+      env['warden'].authenticate! unless ( request_action.nil? || public_actions.include?(request_action) )
     end
 
     get '/' do
-      user = env['warden'].user
+      user = env['warden'].user || User.new
 
-      @queries = user.nil? ? [] : user.queries_available
+      @query_action = user.query_action
+
+      @queries = user.queries_available
 
       slim :queries #'h1 list queries'
       # list all queries shared by other users
@@ -59,6 +63,7 @@ module App
     end
 
     get '/q' do
+      # tsk tsk...DB shouldn't be outside the model
       @data_sources = DB[:data_sources]
 
       slim "h1 new query"
@@ -94,6 +99,11 @@ module App
       # this will be a post method once I get the forms wired up
       o_id = params[:o_id] ? "existing object (with id #{params[:o_id]})" : "new object"
       slim "save the #{o_id} of type: #{params[:obj]}"
+    end
+
+    get '/x/:q_id' do
+      # make sure it's okay we can execute this first y'know
+      slim "h1 execute query #{params[:q_id]}"
     end
 
     get '/admin' do
@@ -178,7 +188,7 @@ form method='post' action=url('/')
     - for query in @queries do
       tr
         td.name
-          a href="/q/#{query[:id]}" = query[:name]
+          a href="/#{@query_action}/#{query[:id]}" = query[:name]
         td.description = query[:description]
 - else
   p

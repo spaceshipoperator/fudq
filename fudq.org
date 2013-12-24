@@ -18,6 +18,8 @@ A user can create queries and edit queries he or she has created against an avai
 
 A query may be shared in either of two ways, it's "definition" (read only text of the query itself) and/or its "results" (given optional input parameters)
 
+Any shared queries against shared data sources are executable by everyone, viewable by authenticated users.
+
 ** tasks
 *** DONE get list of queries owned by the current user and those shared by others displayed with links on index
 *** TODO make view/edit form for query
