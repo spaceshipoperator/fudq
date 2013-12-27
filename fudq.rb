@@ -45,43 +45,26 @@ module App
       public_actions = ['x']
       request_action = request.path_info.split('/')[1]
       env['warden'].authenticate! unless ( request_action.nil? || public_actions.include?(request_action) )
+      @user = env['warden'].user || User.new
     end
 
     get '/' do
-      user = env['warden'].user || User.new
+      @query_action = @user.query_action
 
-      @query_action = user.query_action
+      @queries = @user.queries_available
 
-      @queries = user.queries_available
-
-      slim :queries #'h1 list queries'
-      # list all queries shared by other users
-      #   select * from queries where ...
-      # if we've got a session user:
-      #   list queries owned by the current user (each link to edit)
-      #   link to new query
+      slim :queries
     end
 
-    get '/q' do
-      # tsk tsk...DB shouldn't be outside the model
-      @data_sources = DB[:data_sources]
+    get '/q/?:q_id?' do
+      @query = Query.find(:id => params[:q_id]) || Query.new
+      # determine if the form should be editable
 
-      slim "h1 new query"
-      # list available data source (each link to edit if owned by current user)
-      #   one data source must be selected in order to save query
-      #   link to new data source
-    end
+      @is_editable = @user.queries_editable.include?(@query)
 
-    get '/q/:q_id' do
-      # get the query of course...
-      slim :query #"h1 view/edit query #{params[:q_id]}"
-      # get query from database,
-      # if current user is owner then the form is editable,
-      # if the query is shared the form is viewable
-      # otherwise, whoops
-      # link to execute query and delete query
-      # post to save
-      #   query must belong to the current user before save!
+      puts @is_editable
+
+      slim :query
     end
 
     get '/d' do
@@ -102,7 +85,7 @@ module App
       redirect "/#{params[:obj]}/#{params[:o_id]}"
     end
 
-    get '/x/:q_id' do
+    get '/x/?:q_id?' do
       # make sure it's okay we can execute this first y'know
       slim "h1 execute query #{params[:q_id]}"
     end
@@ -196,8 +179,8 @@ form method='post' action=url('/')
     | No queries found.  Feel free to create your own.
       Thank you!
 @@ query
-form method='post' action=url('/s/q/1')
-  input type='input' name='query[name]' placeholder='meaningful name'
-  input type='input' name='query[description]' placeholder='useful description'
-  input type='text' name='query[definition]' placeholder="select 'foo' bar, 'baz' qux"
-  input type='submit'
+form method='post' action=url("/s/q/#{@query[:id]}")
+  input type='input' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query[:name]
+  input type='input' name='query[description]' placeholder='useful description' readonly=!(@is_editable) value=@query[:description]
+  input type='text' name='query[definition]' placeholder="select 'foo' bar, 'baz' qux" readonly=!(@is_editable) value=@query[:definition]
+  input type='submit' disabled=!(@is_editable)

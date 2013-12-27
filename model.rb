@@ -8,6 +8,9 @@ class User < Sequel::Model
   one_to_many :data_sources
   one_to_many :queries
 
+  alias_method :data_sources_editable, :data_sources
+  alias_method :queries_editable, :queries
+
   def self.authenticate(name, password)
     user = self.first(:name => name)
     user if user && user.password == password

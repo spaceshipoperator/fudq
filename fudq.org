@@ -1,4 +1,5 @@
-* fudq
+#+TITLE: fudq
+#+OPTIONS: H:3 num:nil toc:nil
 
 Starting with [[https://gist.github.com/1327195][one of]] the simplest [[https://github.com/hassox/warden/wiki/Examples][examples]] using [[https://github.com/hassox/warden/wiki][warden]] (for user authentication) with [[http://www.sinatrarb.com/][sinatra]],
 #+begin_src sh :exports none
@@ -21,8 +22,12 @@ A query may be shared in either of two ways, it's "definition" (read only text o
 Any shared queries against shared data sources are executable by everyone
 
 ** tasks
-*** TODO make view/edit form for query
-*** TODO refactor Main before block, maybe instantiate user there
-*** TODO create /x execute query route, return results if permitted
+*** DONE make view/edit form for query
+*** DONE refactor Main before block, maybe instantiate user there
+*** DONE create /x execute query route, return results if permitted
+*** TODO complete post to edit query
+*** TODO new (or register) user process, post username, email, password, confirm
+*** TODO rake task to initialize (or migrate) database
+*** TODO need to get some unit tests
 *** TODO create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
 *** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
