@@ -49,8 +49,6 @@ module App
     end
 
     get '/' do
-      @query_action = @user.query_action
-
       @data_sources = @user.data_sources_available
 
       @queries = @user.queries_available
@@ -232,8 +230,11 @@ form method='post' action=url('/')
     - for query in @queries do
       tr
         td.name
-          a href="/#{@query_action}/#{query[:id]}" = query[:name]
+          a href="/q/#{query[:id]}" = query[:name]
         td.description = query[:description]
+        td.run
+          - if @user.queries_executable.include?(query)
+            a href="/x/#{query[:id]}" ="run"
   br
 - else
   p
