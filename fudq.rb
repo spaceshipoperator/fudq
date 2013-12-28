@@ -51,9 +51,11 @@ module App
     get '/' do
       @query_action = @user.query_action
 
+      @data_sources = @user.data_sources_available
+
       @queries = @user.queries_available
 
-      slim :queries
+      slim :home
     end
 
     get '/q/?:q_id?' do
@@ -77,8 +79,10 @@ module App
       case params[:obj]
         when "q"
           o_id = save_query(params[:o_id], params[:query])
+          flash.success = 'query saved!' unless o_id.nil?
         when "d"
           o_id = save_data_source(params[:o_id], params[:data_source])
+          flash.success = 'data source saved!' unless o_id.nil?
         else
           puts "don't know how to save such a thing"
       end
@@ -135,9 +139,6 @@ module App
       slim "h1 execute query #{params[:q_id]}"
     end
 
-    get '/admin' do
-      slim 'h1 Admin'
-    end
   end
 end
 
@@ -204,21 +205,36 @@ body
         li
           a href='/session/new' login to your account
       li
-        a href='/admin' admin
+        a href='/' home
+  br
   == yield
 @@ new
 form method='post' action=url('/')
   input type='input' name='user[name]' placeholder='abc'
   input type='input' name='user[password]' placeholder='secret'
   input type='submit'
-@@ queries
+@@ home
+- unless (@user.id.nil? || @data_sources.empty?)
+  a href="/d" ="new data source"
+  hr
+  table
+    - for data_source in @data_sources do
+      tr
+        td.name
+          a href="/d/#{data_source[:id]}" = data_source[:name]
+        td.description = data_source[:description]
+  br
 - unless @queries.empty?
+  - unless @user.id.nil?
+    a href="/q" ="new query"
+    hr
   table
     - for query in @queries do
       tr
         td.name
           a href="/#{@query_action}/#{query[:id]}" = query[:name]
         td.description = query[:description]
+  br
 - else
   p
     | No queries found.  Feel free to create your own.

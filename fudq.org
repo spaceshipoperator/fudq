@@ -22,14 +22,12 @@ A query may be shared in either of two ways, it's "definition" (read only text o
 Any shared queries against shared data sources are executable by everyone
 
 ** tasks
-*** DONE make view/edit form for query
-*** DONE refactor Main before block, maybe instantiate user there
-*** DONE create /x execute query route, return results if permitted
-*** DONE complete post to edit query
-ugliness handling dropdown and checkbox...but it seems to work
-*** TODO complete post to edit data source
+*** TODO factor query_action out of User
+*** TODO link to execute query in home list and on query edit page, as appropriate
 *** TODO new (or register) user process, post username, email, password, confirm
 *** TODO rake task to initialize (or migrate) database
 *** TODO need to get some unit tests
 *** TODO create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
 *** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
+*** TODO DRY up slim fo data_source and query checkbox and select lists
+*** TODO DRY up save query and data source logic
