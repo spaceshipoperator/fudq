@@ -64,18 +64,15 @@ module App
       slim :query
     end
 
-    get '/d' do
-      slim "h1 new data source"
+    get '/d/?:d_id?' do
+      @data_source = DataSource.find(:id => params[:d_id]) || DataSource.new
+
+      @is_editable = @data_source.id.nil? || @user.data_sources_editable.include?(@data_source)
+
+      slim :data_source
     end
 
-    get '/d/:d_id' do
-      slim "h1 view/edit data source #{params[:d_id]}"
-      # link to disable data source
-      # post to save
-      #   data source must belong to the current user before save
-    end
-
-    post '/s/:obj/?:o_id?' do
+    post '/:obj/?:o_id?' do
       # this will be a post method once I get the forms wired up
       case params[:obj]
         when "q"
@@ -92,9 +89,8 @@ module App
     def save_query(query_id, query_attributes)
       query = query_id.nil? ? Query.new : Query.find(:id => query_id)
 
-      if (query.id.nil? || @user.queries_editable.include?(query) ) then
+      if (query.id.nil? || @user.queries_editable.include?(query)) then
         is_shared = query_attributes[:is_shared].nil? ? 0 : 1
-        puts "really #{is_shared} ?!?!"
 
         query.user_id = @user.id
         query.data_source_id = query_attributes[:data_source_id]
@@ -109,8 +105,29 @@ module App
       return saved_query.id
     end
 
-    def save_data_source(d_id, data_source)
-      puts "let's save a data source!"
+    def save_data_source(data_source_id, data_source_attributes)
+      data_source = data_source_id.nil? ? DataSource.new : DataSource.find(:id => data_source_id)
+
+      if (data_source.id.nil? || @user.data_sources_editable.include?(data_source)) then
+        is_shared = data_source_attributes[:is_shared].nil? ? 0 : 1
+
+        data_source.user_id = @user.id
+        data_source.name = data_source_attributes[:name]
+        data_source.description = data_source_attributes[:description]
+        data_source.definition = data_source_attributes[:definition]
+        data_source.is_shared = is_shared
+      end
+
+      saved_data_source = data_source.save
+
+      return saved_data_source.id
+    end
+
+    delete '/:obj/:o_id' do
+      # make sure obj belongs to user and then...
+      puts "we delete a #{params[:obj]} with id #{params[:o_id]}"
+      # probably can't delete data sources used by queries
+      redirect '/'
     end
 
     get '/x/?:q_id?' do
@@ -207,7 +224,9 @@ form method='post' action=url('/')
     | No queries found.  Feel free to create your own.
       Thank you!
 @@ query
-form method='post' action=url("/s/q/#{@query.id}")
+form method='post' action=url("/q/#{@query.id}")
+  p ="query name:"
+  input type='text' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query.name
   p ="data source:"
   select name='query[data_source_id]' readonly=!(@is_editable)
     - for data_source in @user.data_sources_available
@@ -215,8 +234,6 @@ form method='post' action=url("/s/q/#{@query.id}")
         option value=data_source.id selected="" =data_source.name
       - else
         option value=data_source.id =data_source.name
-  p ="name:"
-  input type='text' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query.name
   p ="description:"
   textarea name='query[description]' placeholder='useful description' readonly=!(@is_editable) =@query.description
   p ="definition:"
@@ -230,3 +247,28 @@ form method='post' action=url("/s/q/#{@query.id}")
     ="  share this query with others"
   br
   input type='submit' disabled=!(@is_editable)
+- if (@user.queries_editable.include?(@query))
+  form method='post' action=url("/q/#{@query.id}")
+    input type='hidden' name='_method' value='delete'
+    input type='submit' value='delete'
+@@ data_source
+form method='post' action=url("/d/#{@data_source.id}")
+  p ="data source name:"
+  input type='text' name='data_source[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@data_source.name
+  p ="description:"
+  textarea name='data_source[description]' placeholder='useful description' readonly=!(@is_editable) =@data_source.description
+  p ="definition:"
+  textarea name='data_source[definition]' placeholder='{"file_location": "./fudq.db"}' readonly=!(@is_editable) =@data_source.definition
+  p
+  label
+    - if @data_source.is_shared
+      input type='checkbox' name='data_source[is_shared]' readonly=!(@is_editable) checked="" value=1
+    - else
+      input type='checkbox' name='data_source[is_shared]' readonly=!(@is_editable) value=1
+    ="  share this data source with others"
+  br
+  input type='submit' disabled=!(@is_editable) value='save'
+- if (@user.data_sources_editable.include?(@data_source))
+  form method='post' action=url("/d/#{@data_source.id}")
+    input type='hidden' name='_method' value='delete'
+    input type='submit' value='delete'
