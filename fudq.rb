@@ -58,11 +58,8 @@ module App
 
     get '/q/?:q_id?' do
       @query = Query.find(:id => params[:q_id]) || Query.new
-      # determine if the form should be editable
 
-      @is_editable = @user.queries_editable.include?(@query)
-
-      puts @is_editable
+      @is_editable = @query.id.nil? || @user.queries_editable.include?(@query)
 
       slim :query
     end
@@ -80,9 +77,40 @@ module App
 
     post '/s/:obj/?:o_id?' do
       # this will be a post method once I get the forms wired up
-      o_id = params[:o_id] ? "existing object (with id #{params[:o_id]})" : "new object"
-      puts "save the #{o_id} of type: #{params[:obj]}"
-      redirect "/#{params[:obj]}/#{params[:o_id]}"
+      case params[:obj]
+        when "q"
+          o_id = save_query(params[:o_id], params[:query])
+        when "d"
+          o_id = save_data_source(params[:o_id], params[:data_source])
+        else
+          puts "don't know how to save such a thing"
+      end
+
+      redirect "/#{params[:obj]}/#{o_id}"
+    end
+
+    def save_query(query_id, query_attributes)
+      query = query_id.nil? ? Query.new : Query.find(:id => query_id)
+
+      if (query.id.nil? || @user.queries_editable.include?(query) ) then
+        is_shared = query_attributes[:is_shared].nil? ? 0 : 1
+        puts "really #{is_shared} ?!?!"
+
+        query.user_id = @user.id
+        query.data_source_id = query_attributes[:data_source_id]
+        query.name = query_attributes[:name]
+        query.description = query_attributes[:description]
+        query.definition = query_attributes[:definition]
+        query.is_shared = is_shared
+      end
+
+      saved_query = query.save
+
+      return saved_query.id
+    end
+
+    def save_data_source(d_id, data_source)
+      puts "let's save a data source!"
     end
 
     get '/x/?:q_id?' do
@@ -179,8 +207,26 @@ form method='post' action=url('/')
     | No queries found.  Feel free to create your own.
       Thank you!
 @@ query
-form method='post' action=url("/s/q/#{@query[:id]}")
-  input type='input' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query[:name]
-  input type='input' name='query[description]' placeholder='useful description' readonly=!(@is_editable) value=@query[:description]
-  input type='text' name='query[definition]' placeholder="select 'foo' bar, 'baz' qux" readonly=!(@is_editable) value=@query[:definition]
+form method='post' action=url("/s/q/#{@query.id}")
+  p ="data source:"
+  select name='query[data_source_id]' readonly=!(@is_editable)
+    - for data_source in @user.data_sources_available
+      - if (data_source.id == @query.data_source_id)
+        option value=data_source.id selected="" =data_source.name
+      - else
+        option value=data_source.id =data_source.name
+  p ="name:"
+  input type='text' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query.name
+  p ="description:"
+  textarea name='query[description]' placeholder='useful description' readonly=!(@is_editable) =@query.description
+  p ="definition:"
+  textarea name='query[definition]' placeholder="select 'foo' bar, 'baz' qux" readonly=!(@is_editable) =@query.definition
+  p
+  label
+    - if @query.is_shared
+      input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) checked="" value=1
+    - else
+      input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) value=1
+    ="  share this query with others"
+  br
   input type='submit' disabled=!(@is_editable)
