@@ -45,9 +45,31 @@ end
 class DataSource < Sequel::Model
   many_to_one :user
   one_to_many :queries
+
+  def definition
+    JSON.parse(super)
+  end
+
+  def db
+    db = nil
+    case self.type
+      when "sqlite3"
+        db = Sequel.sqlite(self.definition["file_location"])
+      when "postgresql"
+        puts "connect to the pg!"
+    end
+
+    return db
+  end
 end
 
 class Query < Sequel::Model
   many_to_one :data_source
   many_to_one :user
+
+  def run
+    db = self.data_source.db
+
+    db.fetch(self.definition).all
+  end
 end

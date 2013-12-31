@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sinatra/json'
 require 'rack/flash'
 require 'warden'
 require 'slim'
@@ -38,6 +39,7 @@ module App
   end
 
   class Main < Sinatra::Base
+    helpers Sinatra::JSON
 
     enable :inline_templates
 
@@ -133,7 +135,7 @@ module App
     end
 
     def delete_query(query_id)
-      query = Query.find(:id => query_id)
+      query = Query.find(:id => query_id) || Query.new
       deleted_query_id = query.id
 
       if @user.queries_editable.include?(query) then
@@ -143,9 +145,16 @@ module App
       return deleted_query_id
     end
 
-    get '/x/?:q_id?' do
-      # make sure it's okay we can execute this first y'know
-      slim "h1 execute query #{params[:q_id]}"
+    get '/x/:q_id' do
+      query = Query.find(:id => params[:q_id]) || Query.new
+
+      results = ""
+
+      if @user.queries_executable.include?(query) then
+        results = query.run
+      end
+
+      json results
     end
 
   end
