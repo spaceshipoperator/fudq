@@ -73,7 +73,6 @@ module App
     end
 
     post '/:obj/?:o_id?' do
-      # this will be a post method once I get the forms wired up
       case params[:obj]
         when "q"
           o_id = save_query(params[:o_id], params[:query])
@@ -92,14 +91,12 @@ module App
       query = query_id.nil? ? Query.new : Query.find(:id => query_id)
 
       if (query.id.nil? || @user.queries_editable.include?(query)) then
-        is_shared = query_attributes[:is_shared].nil? ? 0 : 1
-
         query.user_id = @user.id
         query.data_source_id = query_attributes[:data_source_id]
         query.name = query_attributes[:name]
         query.description = query_attributes[:description]
         query.definition = query_attributes[:definition]
-        query.is_shared = is_shared
+        query.is_shared = query_attributes[:is_shared].nil? ? 0 : 1
       end
 
       saved_query = query.save
@@ -111,13 +108,11 @@ module App
       data_source = data_source_id.nil? ? DataSource.new : DataSource.find(:id => data_source_id)
 
       if (data_source.id.nil? || @user.data_sources_editable.include?(data_source)) then
-        is_shared = data_source_attributes[:is_shared].nil? ? 0 : 1
-
         data_source.user_id = @user.id
         data_source.name = data_source_attributes[:name]
         data_source.description = data_source_attributes[:description]
         data_source.definition = data_source_attributes[:definition]
-        data_source.is_shared = is_shared
+        data_source.is_shared = data_source_attributes[:is_shared].nil? ? 0 : 1
       end
 
       saved_data_source = data_source.save

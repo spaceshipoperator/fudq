@@ -22,12 +22,15 @@ A query may be shared in either of two ways, it's "definition" (read only text o
 Any shared queries against shared data sources are executable by everyone
 
 ** tasks
-*** TODO factor query_action out of User
+*** TODO complete query delete, need to handle data source delete a bit different
+data source cannot be deleted if queries reference it...else orphaned
+*** TODO complete execute query, return results in json dump
 *** TODO link to execute query in home list and on query edit page, as appropriate
 *** TODO new (or register) user process, post username, email, password, confirm
+*** TODO need to get some [[http://www.sinatrarb.com/testing.html][unit tests]] (but start with the model)
 *** TODO rake task to initialize (or migrate) database
-*** TODO need to get some unit tests
 *** TODO create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
 *** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
 *** TODO DRY up slim fo data_source and query checkbox and select lists
 *** TODO DRY up save query and data source logic
+*** DONE factor query_action out of User
