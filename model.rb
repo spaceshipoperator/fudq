@@ -1,6 +1,8 @@
 require 'sequel'
 require 'sqlite3'
 
+Sequel::Model.plugin :json_serializer
+
 DB = Sequel.sqlite('fudq.db')
 
 class User < Sequel::Model

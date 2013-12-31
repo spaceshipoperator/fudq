@@ -25,6 +25,8 @@ Any shared queries against shared data sources are executable by everyone
 *** TODO complete query delete, need to handle data source delete a bit different
 data source cannot be deleted if queries reference it...else orphaned
 *** TODO complete execute query, return results in json dump
+http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/JsonSerializer.html
+http://www.sinatrarb.com/contrib/json.html
 *** TODO link to execute query in home list and on query edit page, as appropriate
 *** TODO new (or register) user process, post username, email, password, confirm
 *** TODO need to get some [[http://www.sinatrarb.com/testing.html][unit tests]] (but start with the model)

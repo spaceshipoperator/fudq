@@ -121,10 +121,26 @@ module App
     end
 
     delete '/:obj/:o_id' do
-      # make sure obj belongs to user and then...
-      puts "we delete a #{params[:obj]} with id #{params[:o_id]}"
-      # probably can't delete data sources used by queries
-      redirect '/'
+      case params[:obj]
+        when "q"
+          o_id = delete_query(params[:o_id])
+          flash.success = "deleted query #{o_id}!" unless o_id.nil?
+        else
+          puts "don't know how to delete such a thing"
+      end
+
+      redirect "/"
+    end
+
+    def delete_query(query_id)
+      query = Query.find(:id => query_id)
+      deleted_query_id = query.id
+
+      if @user.queries_editable.include?(query) then
+        query.delete
+      end
+
+      return deleted_query_id
     end
 
     get '/x/?:q_id?' do
