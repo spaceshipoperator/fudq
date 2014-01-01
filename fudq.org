@@ -21,18 +21,41 @@ A query may be shared in either of two ways, it's "definition" (read only text o
 
 Any shared queries against shared data sources are executable by everyone
 
-** tasks
-*** TODO complete query delete, need to handle data source delete a bit different
+*** tasks
+**** DONE complete query delete, need to handle data source delete a bit different
 data source cannot be deleted if queries reference it...else orphaned
-*** TODO complete execute query, return results in json dump
+**** DONE complete execute query, return results in json dump
 http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/JsonSerializer.html
 http://www.sinatrarb.com/contrib/json.html
-*** TODO link to execute query in home list and on query edit page, as appropriate
-*** TODO new (or register) user process, post username, email, password, confirm
-*** TODO need to get some [[http://www.sinatrarb.com/testing.html][unit tests]] (but start with the model)
-*** TODO rake task to initialize (or migrate) database
-*** TODO create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
-*** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
-*** TODO DRY up slim fo data_source and query checkbox and select lists
-*** TODO DRY up save query and data source logic
-*** DONE factor query_action out of User
+**** DONE link to execute query in home list and on query edit page, as appropriate
+**** TODO wire up to postgres
+create a jobs database owned by fudq/fudq localhost...with a single table:
+
+create role jobs login encrypted password 'jobs' noinherit valid until 'infinity';
+create database jobs with encoding='utf8' owner=jobs;
+
+| job_id | last_name | salary |
+|   1234 | person1   |   2500 |
+|   7896 | person2   |   2600 |
+|  01254 | person3   |   2800 |
+|   8565 | person4   |   2900 |
+|  66525 | person5   |   3100 |
+|   8897 | person6   |  11000 |
+|  56456 | person7   |  66788 |
+|  78676 | person8   |   7656 |
+
+create table jobs (job_id int, last_name text, salary int);
+\copy jobs from './tmp/jobs.csv' delimiter ','
+
+db = Sequel.connect('postgres://jobs:jobs@localhost/jobs) # Uses the postgres adapter
+
+**** TODO integrate [[http://mleibman.github.io/SlickGrid/examples/example1-simple.html][slickgrid]] on query page
+**** TODO integrate codemirror for data source and query definitions
+**** TODO new (or register) user process, post username, email, password, confirm
+**** TODO need to get some [[http://www.sinatrarb.com/testing.html][unit tests]] (but start with the model)
+**** TODO rake task to initialize (or migrate) database
+**** TODO create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
+**** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
+**** TODO DRY up slim fo data_source and query checkbox and select lists
+**** TODO DRY up save query and data source logic
+**** DONE factor query_action out of User

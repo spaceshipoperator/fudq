@@ -51,12 +51,13 @@ class DataSource < Sequel::Model
   end
 
   def db
+    d = self.definition
     db = nil
     case self.type
-      when "sqlite3"
-        db = Sequel.sqlite(self.definition["file_location"])
-      when "postgresql"
-        puts "connect to the pg!"
+      when "sqlite"
+        db = Sequel.connect("sqlite://#{d['file_location']}")
+      when "postgres"
+        db = Sequel.connect("postgres://#{d['user']}:#{d['password']}@#{d['host']}/#{d['database']}")
     end
 
     return db
