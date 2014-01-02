@@ -206,6 +206,8 @@ __END__
 @@ layout
 html
 head
+  script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" charset="utf-8"
+  script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"
 body
   #flash
     - [:error, :success].each do |name|
@@ -261,7 +263,7 @@ form method='post' action=url('/')
     | No queries found.  Feel free to create your own.
       Thank you!
 @@ query
-form method='post' action=url("/q/#{@query.id}")
+form id='saveQuery' method='post' action=url("/q/#{@query.id}")
   p ="query name:"
   input type='text' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query.name
   p ="data source:"
@@ -274,7 +276,9 @@ form method='post' action=url("/q/#{@query.id}")
   p ="description:"
   textarea name='query[description]' placeholder='useful description' readonly=!(@is_editable) =@query.description
   p ="definition:"
-  textarea name='query[definition]' placeholder="select 'foo' bar, 'baz' qux" readonly=!(@is_editable) =@query.definition
+  input id='queryDefinition' type='hidden' name='query[definition]' value=@query.definition
+  #queryEditor style="height: 200px; width: 600px"
+    =@query.definition
   p
   label
     - if @query.is_shared
@@ -285,9 +289,16 @@ form method='post' action=url("/q/#{@query.id}")
   br
   input type='submit' disabled=!(@is_editable)
 - if (@user.queries_editable.include?(@query))
-  form method='post' action=url("/q/#{@query.id}")
+  form id='deleteQuery' method='post' action=url("/q/#{@query.id}")
     input type='hidden' name='_method' value='delete'
     input type='submit' value='delete'
+javascript:
+  var editor = ace.edit("queryEditor");
+  editor.setTheme("ace/theme/chrome");
+  editor.getSession().setMode("ace/mode/sql");
+  $("#saveQuery").submit(function() {
+    $("#queryDefinition").val(editor.getValue());
+  });
 @@ data_source
 form method='post' action=url("/d/#{@data_source.id}")
   p ="data source name:"

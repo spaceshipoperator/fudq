@@ -22,13 +22,14 @@ A query may be shared in either of two ways, it's "definition" (read only text o
 Any shared queries against shared data sources are executable by everyone
 
 *** tasks
+**** DONE factor query_action out of User
 **** DONE complete query delete, need to handle data source delete a bit different
 data source cannot be deleted if queries reference it...else orphaned
 **** DONE complete execute query, return results in json dump
 http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/JsonSerializer.html
 http://www.sinatrarb.com/contrib/json.html
 **** DONE link to execute query in home list and on query edit page, as appropriate
-**** TODO wire up to postgres
+**** DONE wire up to postgres
 create a jobs database owned by fudq/fudq localhost...with a single table:
 
 create role jobs login encrypted password 'jobs' noinherit valid until 'infinity';
@@ -48,9 +49,12 @@ create table jobs (job_id int, last_name text, salary int);
 \copy jobs from './tmp/jobs.csv' delimiter ','
 
 db = Sequel.connect('postgres://jobs:jobs@localhost/jobs) # Uses the postgres adapter
-
+**** DONE integrate [[http://ace.c9.io/#nav=about][ace]] for data source and query definitions
+tried [[http://codemirror.net/index.html][codemirror]], felt clunky
+**** TODO do not display data source on query page unless editable
+**** TODO need type field on data source page
+**** TODO execute button on query page, return data to div
 **** TODO integrate [[http://mleibman.github.io/SlickGrid/examples/example1-simple.html][slickgrid]] on query page
-**** TODO integrate codemirror for data source and query definitions
 **** TODO new (or register) user process, post username, email, password, confirm
 **** TODO need to get some [[http://www.sinatrarb.com/testing.html][unit tests]] (but start with the model)
 **** TODO rake task to initialize (or migrate) database
@@ -58,4 +62,3 @@ db = Sequel.connect('postgres://jobs:jobs@localhost/jobs) # Uses the postgres ad
 **** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
 **** TODO DRY up slim fo data_source and query checkbox and select lists
 **** TODO DRY up save query and data source logic
-**** DONE factor query_action out of User

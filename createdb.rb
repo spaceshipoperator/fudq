@@ -44,7 +44,7 @@ DB[:data_sources].insert(
   :name => 'fudq',
   :description => 'the database that stores the users, data sources and queries managed by the "system", fudq',
   :type => 'sqlite',
-  :definition => '{"file_location": "./fudq.rb"}',
+  :definition => '{"file_location": "fudq.db"}',
   :is_shared => 0)
 # data_source.id == 1
 
