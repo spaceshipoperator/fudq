@@ -51,8 +51,18 @@ create table jobs (job_id int, last_name text, salary int);
 db = Sequel.connect('postgres://jobs:jobs@localhost/jobs) # Uses the postgres adapter
 **** DONE integrate [[http://ace.c9.io/#nav=about][ace]] for data source and query definitions
 tried [[http://codemirror.net/index.html][codemirror]], felt clunky
-**** TODO do not display data source on query page unless editable
+I'm sure I should use one of those fancy js package/dependency managers...but for now, just wget it
+#+begin_src sh :exports none
+cd public
+
+#+end_src
+**** TODO display user name after login
 **** TODO need type field on data source page
+**** TODO create sandbox pg database and fudq datasource (for admin user shared)
+**** TODO do not display data source on query page unless query is editable
+**** TODO create a datasource in order to query the fudq git repository
+considering [[https://speakerdeck.com/bkeepers/git-the-nosql-database][git as a nosql]] database, demonstrate a query against it in fudq
+**** TODO create datasource to query locus via shell
 **** TODO execute button on query page, return data to div
 **** TODO integrate [[http://mleibman.github.io/SlickGrid/examples/example1-simple.html][slickgrid]] on query page
 **** TODO new (or register) user process, post username, email, password, confirm
@@ -62,3 +72,8 @@ tried [[http://codemirror.net/index.html][codemirror]], felt clunky
 **** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
 **** TODO DRY up slim fo data_source and query checkbox and select lists
 **** TODO DRY up save query and data source logic
+**** TODO allow for query input args (ala parameterized views, table-valued functions)
+**** TODO handle streaming results, queries against nosql datasources
+**** TODO break up the app into multiple files, modularize...growing need for a framework
+consider [[http://stackoverflow.com/questions/5015471/using-sinatra-for-larger-projects-via-multiple-files][SO - using sinatra w/ multiple files]]
+also read [[http://blog.carbonfive.com/2013/06/24/sinatra-best-practices-part-one/][Sinatra Best Practices]]

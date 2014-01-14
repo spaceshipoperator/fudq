@@ -215,6 +215,7 @@ body
         .message class=name
           p = flash[name]
   nav
+    h3 ="welcome, #{@user.nil? ? 'please login' : @user.name}"
     ul
       - if env['warden'].authenticated?
         li
@@ -303,6 +304,8 @@ javascript:
 form method='post' action=url("/d/#{@data_source.id}")
   p ="data source name:"
   input type='text' name='data_source[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@data_source.name
+  p ="data source type:"
+  input type='text' name='data_source[type]' placeholder='sqlite' readonly=!(@is_editable) value=@data_source.type
   p ="description:"
   textarea name='data_source[description]' placeholder='useful description' readonly=!(@is_editable) =@data_source.description
   p ="definition:"
