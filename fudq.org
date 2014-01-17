@@ -16,7 +16,7 @@ cp tmp/gist/gistfile1.rb fudq.rb
 
 fundamentally users, data sources and queries.
 
-[[https://query.meddadada.com:8080/images/an_erd_fudq.png]]
+[[https://meddadada.com/images/an_erd_fudq.png]]
 
 a *user* can create *data sources*
 
