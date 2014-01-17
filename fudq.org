@@ -1,69 +1,45 @@
 #+TITLE: fudq
 #+OPTIONS: H:3 num:nil toc:nil
 
+* prelude
+
 Starting with [[https://gist.github.com/1327195][one of]] the simplest [[https://github.com/hassox/warden/wiki/Examples][examples]] using [[https://github.com/hassox/warden/wiki][warden]] (for user authentication) with [[http://www.sinatrarb.com/][sinatra]],
-#+begin_src sh :exports none
+
+#+begin_src sh :exports code :eval no-export
 echo "tmp/*" >> .gitignore
 mkdir tmp
 git clone https://gist.github.com/8043506.git tmp/gist
 cp tmp/gist/gistfile1.rb fudq.rb
 #+end_src
 
-[[https://github.com/spaceshipoperator/fudq][fudq]] intends to be nothing more than fundamentally users, datasources and queries.
+* [[https://github.com/spaceshipoperator/fudq][fudq]]
 
-More specifically:
+fundamentally users, data sources and queries.
 
-A user can create datasources and modify and/or share datasources that he or she has created.
+[[https://query.meddadada.com:8080/images/an_erd_fudq.png]]
 
-A user can create queries and edit queries he or she has created against an available datasource.
+a *user* can create *data sources*
 
-A query may be shared in either of two ways, it's "definition" (read only text of the query itself) and/or its "results" (given optional input parameters)
+a user can view and modify the description and definition of data sources that he or she has created
 
-Any shared queries against shared data sources are executable by everyone
+if a data source is shared, other users can view its description (but *not* its definition) and write queries against it
+
+a user can create *queries* against available data sources
+
+if a query is shared, other users can view its description (*and* definition, but *not* its data source *unless* the data source is also shared)
+
+if a query is shared *and* its associated data source is shared, other users can execute the query to retrieve results
 
 *** tasks
-**** DONE factor query_action out of User
-**** DONE complete query delete, need to handle data source delete a bit different
-data source cannot be deleted if queries reference it...else orphaned
-**** DONE complete execute query, return results in json dump
-http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/JsonSerializer.html
-http://www.sinatrarb.com/contrib/json.html
-**** DONE link to execute query in home list and on query edit page, as appropriate
-**** DONE wire up to postgres
-create a jobs database owned by fudq/fudq localhost...with a single table:
-
-create role jobs login encrypted password 'jobs' noinherit valid until 'infinity';
-create database jobs with encoding='utf8' owner=jobs;
-
-| job_id | last_name | salary |
-|   1234 | person1   |   2500 |
-|   7896 | person2   |   2600 |
-|  01254 | person3   |   2800 |
-|   8565 | person4   |   2900 |
-|  66525 | person5   |   3100 |
-|   8897 | person6   |  11000 |
-|  56456 | person7   |  66788 |
-|  78676 | person8   |   7656 |
-
-create table jobs (job_id int, last_name text, salary int);
-\copy jobs from './tmp/jobs.csv' delimiter ','
-
-db = Sequel.connect('postgres://jobs:jobs@localhost/jobs) # Uses the postgres adapter
-**** DONE integrate [[http://ace.c9.io/#nav=about][ace]] for data source and query definitions
-tried [[http://codemirror.net/index.html][codemirror]], felt clunky
-I'm sure I should use one of those fancy js package/dependency managers...but for now, just wget it
-#+begin_src sh :exports none
-cd public
-
-#+end_src
-**** TODO display user name after login
-**** TODO need type field on data source page
-**** TODO create sandbox pg database and fudq datasource (for admin user shared)
+**** DONE create simple er diagram for design documentation
 **** TODO do not display data source on query page unless query is editable
-**** TODO create a datasource in order to query the fudq git repository
-considering [[https://speakerdeck.com/bkeepers/git-the-nosql-database][git as a nosql]] database, demonstrate a query against it in fudq
-**** TODO create datasource to query locus via shell
+**** TODO create sandbox pg database and fudq datasource (for admin user shared)
 **** TODO execute button on query page, return data to div
+**** TODO figure best way to delete or disable a data source (w/o orphaned queries)
+**** TODO consider save and share results
+**** TODO create a data source in order to query the fudq git repository
+considering [[https://speakerdeck.com/bkeepers/git-the-nosql-database][git as a nosql]] [[http://opensoul.org/2011/09/01/git-the-nosql-database/][database]], demonstrate a query against it in fudq
+**** TODO create data source to query locus via shell
 **** TODO integrate [[http://mleibman.github.io/SlickGrid/examples/example1-simple.html][slickgrid]] on query page
 **** TODO new (or register) user process, post username, email, password, confirm
 **** TODO need to get some [[http://www.sinatrarb.com/testing.html][unit tests]] (but start with the model)
