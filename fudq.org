@@ -39,15 +39,15 @@ and here's a working list of things yet to be done
 **** DONE "new data source" is broken, fix it
 TypeError at /d
 no implicit conversion of nil into String
-**** TODO figure out why "edit data source" fields have readonly="" for "jobs" data source while logged in as "admin"
+**** DONE figure out why "edit data source" fields have readonly="" for "jobs" data source while logged in as "admin"
+data source should not be editable unless owned by logged in user
 review logic for determining read only
 evaluate data differences/discrepancies
-**** TODO do not display data source on query page unless query is editable
-**** TODO create sandbox pg database and fudq datasource (for admin user shared)
+**** DONE do not display data source on query page unless query is editable
+**** TODO create sandbox pg database and fudq data source (for admin user shared)
 **** TODO "run" link on query page, return data to div
 **** TODO figure best way to delete or disable a data source (w/o orphaned queries)
 **** TODO consider save and share results
-**** TODO 
 **** TODO create a data source in order to query the fudq git repository
 considering [[https://speakerdeck.com/bkeepers/git-the-nosql-database][git as a nosql]] [[http://opensoul.org/2011/09/01/git-the-nosql-database/][database]], demonstrate a query against it in fudq
 **** TODO create data source to query locus via shell

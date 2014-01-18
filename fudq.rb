@@ -242,7 +242,10 @@ form method='post' action=url('/')
     - for data_source in @data_sources do
       tr
         td.name
-          a href="/d/#{data_source[:id]}" = data_source[:name]
+          - if @user.data_sources_editable.include?(data_source)
+            a href="/d/#{data_source[:id]}" = data_source[:name]
+          - else
+            = data_source[:name]
         td.description = data_source[:description]
   br
 - unless @queries.empty?
@@ -267,13 +270,14 @@ form method='post' action=url('/')
 form id='saveQuery' method='post' action=url("/q/#{@query.id}")
   p ="query name:"
   input type='text' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query.name
-  p ="data source:"
-  select name='query[data_source_id]' readonly=!(@is_editable)
-    - for data_source in @user.data_sources_available
-      - if (data_source.id == @query.data_source_id)
-        option value=data_source.id selected="" =data_source.name
-      - else
-        option value=data_source.id =data_source.name
+  - if @is_editable
+    p ="data source:"
+    select name='query[data_source_id]' readonly=!(@is_editable)
+      - for data_source in @user.data_sources_available
+        - if (data_source.id == @query.data_source_id)
+          option value=data_source.id selected="" =data_source.name
+        - else
+          option value=data_source.id =data_source.name
   p ="description:"
   textarea name='query[description]' placeholder='useful description' readonly=!(@is_editable) =@query.description
   p ="definition:"
