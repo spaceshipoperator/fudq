@@ -1,19 +1,7 @@
 #+TITLE: fudq
 #+OPTIONS: H:3 num:nil toc:nil
 
-* prelude
-
-Starting with [[https://gist.github.com/1327195][one of]] the simplest [[https://github.com/hassox/warden/wiki/Examples][examples]] using [[https://github.com/hassox/warden/wiki][warden]] (for user authentication) with [[http://www.sinatrarb.com/][sinatra]],
-
-#+begin_src sh :exports code :eval no-export
-echo "tmp/*" >> .gitignore
-mkdir tmp
-git clone https://gist.github.com/8043506.git tmp/gist
-cp tmp/gist/gistfile1.rb fudq.rb
-#+end_src
-
 * [[https://github.com/spaceshipoperator/fudq][fudq]]
-
 fundamentally users, data sources and queries.
 
 [[https://meddadada.com/images/an_erd_fudq.png]]
@@ -30,13 +18,36 @@ if a query is shared, other users can view its description (*and* definition, bu
 
 if a query is shared *and* its associated data source is shared, other users can execute the query to retrieve results
 
+** purpose
+to provide the simplest means of sharing data from an arbitrary source with others on the web
+
+** background
+with a nod toward the [[https://en.wikipedia.org/wiki/Unix_philosophy][Unix tradition]] and starting with [[https://gist.github.com/1327195][one of]] the simplest [[https://github.com/hassox/warden/wiki/Examples][examples]] using [[https://github.com/hassox/warden/wiki][warden]] (for user authentication) and [[http://www.sinatrarb.com/][sinatra]],
+
+#+begin_src sh :exports code :eval no-export
+echo "tmp/*" >> .gitignore
+mkdir tmp
+git clone https://gist.github.com/8043506.git tmp/gist
+cp tmp/gist/gistfile1.rb fudq.rb
+#+end_src
+
+from there you can follow the commits
+
+and here's a working list of things yet to be done
+
 *** tasks
-**** DONE create simple er diagram for design documentation
+**** DONE "new data source" is broken, fix it
+TypeError at /d
+no implicit conversion of nil into String
+**** TODO figure out why "edit data source" fields have readonly="" for "jobs" data source while logged in as "admin"
+review logic for determining read only
+evaluate data differences/discrepancies
 **** TODO do not display data source on query page unless query is editable
 **** TODO create sandbox pg database and fudq datasource (for admin user shared)
-**** TODO execute button on query page, return data to div
+**** TODO "run" link on query page, return data to div
 **** TODO figure best way to delete or disable a data source (w/o orphaned queries)
 **** TODO consider save and share results
+**** TODO 
 **** TODO create a data source in order to query the fudq git repository
 considering [[https://speakerdeck.com/bkeepers/git-the-nosql-database][git as a nosql]] [[http://opensoul.org/2011/09/01/git-the-nosql-database/][database]], demonstrate a query against it in fudq
 **** TODO create data source to query locus via shell
@@ -45,11 +56,13 @@ considering [[https://speakerdeck.com/bkeepers/git-the-nosql-database][git as a 
 **** TODO need to get some [[http://www.sinatrarb.com/testing.html][unit tests]] (but start with the model)
 **** TODO rake task to initialize (or migrate) database
 **** TODO create hash of user password (maybe with [[http://code.google.com/p/crypto-js/#Quick-start_Guide][crypto-js]])
+**** TODO allow for query input args (ala parameterized views, table-valued functions)
 **** TODO resolve "SECURITY WARNING: No secret option provided to Rack::Session::Cookie."
+because I'm a sloppy developer...running with scissors
 **** TODO DRY up slim fo data_source and query checkbox and select lists
 **** TODO DRY up save query and data source logic
-**** TODO allow for query input args (ala parameterized views, table-valued functions)
 **** TODO handle streaming results, queries against nosql datasources
 **** TODO break up the app into multiple files, modularize...growing need for a framework
+consider reproducible (tangle/weave) org file that keeps all the code along with the documentation
 consider [[http://stackoverflow.com/questions/5015471/using-sinatra-for-larger-projects-via-multiple-files][SO - using sinatra w/ multiple files]]
 also read [[http://blog.carbonfive.com/2013/06/24/sinatra-best-practices-part-one/][Sinatra Best Practices]]

@@ -47,7 +47,7 @@ class DataSource < Sequel::Model
   one_to_many :queries
 
   def definition
-    JSON.parse(super)
+    JSON.parse(super) unless super.nil?
   end
 
   def db

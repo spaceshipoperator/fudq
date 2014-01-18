@@ -98,3 +98,12 @@ tried [[http://codemirror.net/index.html][codemirror]], felt clunky
   :ARCHIVE_CATEGORY: fudq
   :ARCHIVE_TODO: DONE
   :END:
+
+* DONE create simple er diagram for design documentation
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2014-01-17 Fri 15:30
+  :ARCHIVE_FILE: ~/fudq/fudq.org
+  :ARCHIVE_OLPATH: [[https://github.com/spaceshipoperator/fudq][fudq]]/background/tasks
+  :ARCHIVE_CATEGORY: fudq
+  :ARCHIVE_TODO: DONE
+  :END:
