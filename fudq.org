@@ -37,14 +37,13 @@ from there you can follow the commits
 and here's a working list of things yet to be done
 
 ** tasks
-  - [X] "new data source" is broken, fix it
-    TypeError at /d
-    no implicit conversion of nil into String
-  - [X] figure out why "edit data source" fields have readonly="" for "jobs" data source while logged in as "admin"
-    data source should not be editable unless owned by logged in user
-    review logic for determining read only
-    evaluate data differences/discrepancies
-  - [X] do not display data source on query page unless query is editable
+  - [ ] FIX save data source is busted
+    error at /d/2 757: unexpected token at '{"user"=>"guest",
+  - [X] ace editor should be readonly when user cannot edit query
+  - [X] 'share this' should not be visible unless query editable
+  - [X] FIX save query doesn't capture the text from ace
+    only happened on server because app deployed via https, but src for jquery was http...just squashed it on the server for now, need to refactor code later
+  - [ ] set javascript includes protocol http/https accordingly
   - [ ] create sandbox pg database and fudq data source (for admin user shared)
   - [ ] "run" link on query page, return data to div
   - [ ] figure best way to delete or disable a data source (w/o orphaned queries)

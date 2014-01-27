@@ -123,6 +123,7 @@ module App
     end
 
     delete '/:obj/:o_id' do
+      puts "what the fuck is this running for?"
       case params[:obj]
         when "q"
           o_id = delete_query(params[:o_id])
@@ -285,15 +286,17 @@ form id='saveQuery' method='post' action=url("/q/#{@query.id}")
   #queryEditor style="height: 200px; width: 600px"
     =@query.definition
   p
-  label
-    - if @query.is_shared
-      input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) checked="" value=1
-    - else
-      input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) value=1
-    ="  share this query with others"
-  br
-  input type='submit' disabled=!(@is_editable)
-- if (@user.queries_editable.include?(@query))
+  - if @is_editable
+    label
+      - if @query.is_shared
+        input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) checked="" value=1
+      - else
+        input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) value=1
+      ="  share this query with others"
+    br
+    input type='submit' disabled=!(@is_editable)
+    br
+- if (!(@query.id.nil?) && @is_editable)
   form id='deleteQuery' method='post' action=url("/q/#{@query.id}")
     input type='hidden' name='_method' value='delete'
     input type='submit' value='delete'
@@ -304,6 +307,7 @@ javascript:
   $("#saveQuery").submit(function() {
     $("#queryDefinition").val(editor.getValue());
   });
+  editor.setReadOnly(#{!(@is_editable)});
 @@ data_source
 form method='post' action=url("/d/#{@data_source.id}")
   p ="data source name:"
