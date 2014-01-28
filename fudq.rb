@@ -205,128 +205,134 @@ Rack::Handler::Thin.run builder
 __END__
 @@ layout
 html
-head
-  script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" charset="utf-8"
-  script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"
-body
-  #flash
-    - [:error, :success].each do |name|
-      - if flash.has?(name)
-        .message class=name
-          p = flash[name]
-  nav
-    h3 ="welcome, #{@user.nil? ? 'please login' : @user.name}"
-    ul
-      - if env['warden'].authenticated?
-        li
-          form action='/session' method='post'
-            input type='hidden' name='_method' value='delete'
-            input type='submit' value='logout'
-      - else
-        li
-          a href='/session/new' login to your account
-      li
-        a href='/' home
-  br
-  == yield
-@@ new
-form method='post' action=url('/')
-  input type='input' name='user[name]' placeholder='abc'
-  input type='input' name='user[password]' placeholder='secret'
-  input type='submit'
-@@ home
-- unless (@user.id.nil? || @data_sources.empty?)
-  a href="/d" ="new data source"
-  hr
-  table
-    - for data_source in @data_sources do
-      tr
-        td.name
-          - if @user.data_sources_editable.include?(data_source)
-            a href="/d/#{data_source[:id]}" = data_source[:name]
-          - else
-            = data_source[:name]
-        td.description = data_source[:description]
-  br
-- unless @queries.empty?
-  - unless @user.id.nil?
-    a href="/q" ="new query"
-    hr
-  table
-    - for query in @queries do
-      tr
-        td.name
-          a href="/q/#{query[:id]}" = query[:name]
-        td.description = query[:description]
-        td.run
-          - if @user.queries_executable.include?(query)
-            a href="/x/#{query[:id]}" ="run"
-  br
-- else
-  p
-    | No queries found.  Feel free to create your own.
-      Thank you!
-@@ query
-form id='saveQuery' method='post' action=url("/q/#{@query.id}")
-  p ="query name:"
-  input type='text' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query.name
-  - if @is_editable
-    p ="data source:"
-    select name='query[data_source_id]' readonly=!(@is_editable)
-      - for data_source in @user.data_sources_available
-        - if (data_source.id == @query.data_source_id)
-          option value=data_source.id selected="" =data_source.name
+  head
+    style media="screen" type="text/css"
+      =="@import \"/style/layout3.css\""
+    script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" charset="utf-8"
+    script src="/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"
+  body
+    #flash
+      - [:error, :success].each do |name|
+        - if flash.has?(name)
+          .message class=name
+            p = flash[name]
+    == yield
+    #navAlpha
+      h2 ="welcome #{@user.nil? ? '' : @user.name}"
+      ul
+        - if env['warden'].authenticated?
+          li
+            form action='/session' method='post'
+              input type='hidden' name='_method' value='delete'
+              input class="button blue" type='submit' value='logout'
         - else
-          option value=data_source.id =data_source.name
-  p ="description:"
-  textarea name='query[description]' placeholder='useful description' readonly=!(@is_editable) =@query.description
-  p ="definition:"
-  input id='queryDefinition' type='hidden' name='query[definition]' value=@query.definition
-  #queryEditor style="height: 200px; width: 600px"
-    =@query.definition
-  p
-  - if @is_editable
-    label
-      - if @query.is_shared
-        input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) checked="" value=1
-      - else
-        input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) value=1
-      ="  share this query with others"
-    br
-    input type='submit' disabled=!(@is_editable)
-    br
-- if (!(@query.id.nil?) && @is_editable)
-  form id='deleteQuery' method='post' action=url("/q/#{@query.id}")
-    input type='hidden' name='_method' value='delete'
-    input type='submit' value='delete'
-javascript:
-  var editor = ace.edit("queryEditor");
-  editor.setTheme("ace/theme/chrome");
-  editor.getSession().setMode("ace/mode/sql");
-  $("#saveQuery").submit(function() {
-    $("#queryDefinition").val(editor.getValue());
-  });
-  editor.setReadOnly(#{!(@is_editable)});
-@@ data_source
-form method='post' action=url("/d/#{@data_source.id}")
-  p ="data source name:"
-  input type='text' name='data_source[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@data_source.name
-  p ="data source type:"
-  input type='text' name='data_source[type]' placeholder='sqlite' readonly=!(@is_editable) value=@data_source.type
-  p ="description:"
-  textarea name='data_source[description]' placeholder='useful description' readonly=!(@is_editable) =@data_source.description
-  p ="definition:"
-  textarea name='data_source[definition]' placeholder='{"file_location": "./fudq.db"}' readonly=!(@is_editable) =@data_source.definition
-  p
-  label
-    - if @data_source.is_shared
-      input type='checkbox' name='data_source[is_shared]' readonly=!(@is_editable) checked="" value=1
-    - else
-      input type='checkbox' name='data_source[is_shared]' readonly=!(@is_editable) value=1
-    ="  share this data source with others"
+          li
+            a href='/session/new' login
+        li
+          a href='/' home
+@@ new
+.content
+  form method='post' action=url('/')
+    input type='input' name='user[name]' placeholder='abc'
+    input type='input' name='user[password]' placeholder='secret'
+    input class="button blue" type='submit' value='login'
+@@ home
+.content
+  - unless (@user.id.nil? || @data_sources.empty?)
+    a href="/d" ="new data source"
+    hr
+    table
+      - for data_source in @data_sources do
+        tr
+          td.name
+            - if @user.data_sources_editable.include?(data_source)
+              a href="/d/#{data_source[:id]}" = data_source[:name]
+            - else
+              = data_source[:name]
+          td.description = data_source[:description]
   br
-  input type='submit' disabled=!(@is_editable) value='save'
-- if (@user.data_sources_editable.include?(@data_source))
+.content
+  - unless @queries.empty?
+    - unless @user.id.nil?
+      a href="/q" ="new query"
+      hr
+    table
+      - for query in @queries do
+        tr
+          td.name
+            a href="/q/#{query[:id]}" = query[:name]
+          td.description = query[:description]
+          td.run
+            - if @user.queries_executable.include?(query)
+              a href="/x/#{query[:id]}" ="run"
+    br
+  - else
+    p
+      | No queries found.  Feel free to create your own.
+        Thank you!
+@@ query
+.content
+  form id='saveQuery' method='post' action=url("/q/#{@query.id}")
+    p ="query name:"
+    input type='text' name='query[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@query.name
+    - if @is_editable
+      p ="data source:"
+      select name='query[data_source_id]' readonly=!(@is_editable)
+        - for data_source in @user.data_sources_available
+          - if (data_source.id == @query.data_source_id)
+            option value=data_source.id selected="" =data_source.name
+          - else
+            option value=data_source.id =data_source.name
+    p ="description:"
+    textarea name='query[description]' placeholder='useful description' readonly=!(@is_editable) =@query.description
+    p ="definition:"
+    input id='queryDefinition' type='hidden' name='query[definition]' value=@query.definition
+    #queryEditor style="height: 200px; width: 600px"
+      =@query.definition
+    p
+    - if @is_editable
+      label
+        - if @query.is_shared
+          input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) checked="" value=1
+        - else
+          input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) value=1
+        ="  share this query with others"
+      br
+      input class="button blue" type='submit' disabled=!(@is_editable) value='save'
+      br
+  - if (!(@query.id.nil?) && @is_editable)
+    form id='deleteQuery' method='post' action=url("/q/#{@query.id}")
+      input type='hidden' name='_method' value='delete'
+      input class="button blue" type='submit' value='delete'
+  javascript:
+    var editor = ace.edit("queryEditor");
+    editor.setTheme("ace/theme/chrome");
+    editor.getSession().setMode("ace/mode/sql");
+    $("#saveQuery").submit(function() {
+      $("#queryDefinition").val(editor.getValue());
+    });
+    editor.setReadOnly(#{!(@is_editable)});
+@@ data_source
+.content
   form method='post' action=url("/d/#{@data_source.id}")
-    input type='hidden' name='_method' value='delete'
-    input type='submit' value='delete'
+    p ="data source name:"
+    input type='text' name='data_source[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@data_source.name
+    p ="data source type:"
+    input type='text' name='data_source[type]' placeholder='sqlite' readonly=!(@is_editable) value=@data_source.type
+    p ="description:"
+    textarea name='data_source[description]' placeholder='useful description' readonly=!(@is_editable) =@data_source.description
+    p ="definition:"
+    textarea name='data_source[definition]' placeholder='{"file_location": "./fudq.db"}' readonly=!(@is_editable) =@data_source.definition
+    p
+    label
+      - if @data_source.is_shared
+        input type='checkbox' name='data_source[is_shared]' readonly=!(@is_editable) checked="" value=1
+      - else
+        input type='checkbox' name='data_source[is_shared]' readonly=!(@is_editable) value=1
+      ="  share this data source with others"
+    br
+    input class="button blue" type='submit' disabled=!(@is_editable) value='save'
+  - if (@user.data_sources_editable.include?(@data_source))
+    form method='post' action=url("/d/#{@data_source.id}")
+      input type='hidden' name='_method' value='delete'
+      input class="button blue" type='submit' value='delete'
