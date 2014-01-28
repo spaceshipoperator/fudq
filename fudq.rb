@@ -123,7 +123,6 @@ module App
     end
 
     delete '/:obj/:o_id' do
-      puts "what the fuck is this running for?"
       case params[:obj]
         when "q"
           o_id = delete_query(params[:o_id])
