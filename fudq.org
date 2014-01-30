@@ -37,10 +37,25 @@ from there you can follow the commits
 and here's a working list of things yet to be done
 
 ** tasks
+  - [ ] FIX flash messages are not visible (after adjusting layout and css)
+  - [ ] consider refactoring buttons for form posts
+    currently:
+    #+begin_src ruby :exports both :eval no-export
+    form method='post' action=url('/')
+      input type='input' name='user[name]' placeholder='abc'
+      input type='input' name='user[password]' placeholder='secret'
+      input class="button blue" type='submit' value='authenticate'
+    #+end_src
+
+    alternatively: [[http://stackoverflow.com/questions/8398726/using-the-post-method-with-html-anchor-tags/8398954#8398954][SO - http post with anchor tags]]
+    - might make app more dependent on javascript
+    - might make code more compact
+
+  - [ ] move login/logout to right nav (navBeta)
   - [ ] need a more sane page layout and a little css love
-    not sure why or what for teh css @import within a style tag, but to pull that off in slim keep in mind
-    http://rdoc.info/gems/slim/file/README.md#Output_without_HTML_escaping___
+    not sure why or what for teh css @import within a style tag, but to pull that off in slim keep in mind make sure you [[http://rdoc.info/gems/slim/file/README.md#Output_without_HTML_escaping___][do not escape the HTML]] (take care)
   - [ ] query titles should not be links when not authenticated
+  - [ ] improve table css (listing queries, data sources), make [[http://lutrov.com/blog/pretty-html-tables-with-css][pretty]]
   - [ ] FIX save data source is busted
     error at /d/2 757: unexpected token at '{"user"=>"guest",
   - [ ] set javascript includes protocol http/https accordingly

@@ -222,20 +222,22 @@ html
       ul
         - if env['warden'].authenticated?
           li
-            form action='/session' method='post'
+            form id='logout' action='/session' method='post'
               input type='hidden' name='_method' value='delete'
-              input class="button blue" type='submit' value='logout'
+              a onclick="$('#logout').submit(); return false;" href="#" logout
         - else
           li
-            a href='/session/new' login
+            form id='login' method='post' action='/session/new'
+              input type='hidden' name='_method' value='get'
+              a onclick="$('#login').submit(); return false;" href="#" login
         li
           a href='/' home
 @@ new
 .content
-  form method='post' action=url('/')
+  form id='authenticate' method='post' action=url('/')
     input type='input' name='user[name]' placeholder='abc'
     input type='input' name='user[password]' placeholder='secret'
-    input class="button blue" type='submit' value='login'
+    a onclick="$('#authenticate').submit(); return false;" href="#" authenticate
 @@ home
 .content
   - unless (@user.id.nil? || @data_sources.empty?)
@@ -298,12 +300,12 @@ html
           input type='checkbox' name='query[is_shared]' readonly=!(@is_editable) value=1
         ="  share this query with others"
       br
-      input class="button blue" type='submit' disabled=!(@is_editable) value='save'
+      a onclick="$('#saveQuery').submit(); return false;" href="#" save
       br
   - if (!(@query.id.nil?) && @is_editable)
     form id='deleteQuery' method='post' action=url("/q/#{@query.id}")
       input type='hidden' name='_method' value='delete'
-      input class="button blue" type='submit' value='delete'
+      a onclick="$('#deleteQuery').submit(); return false;" href="#" delete
   javascript:
     var editor = ace.edit("queryEditor");
     editor.setTheme("ace/theme/chrome");
@@ -314,7 +316,7 @@ html
     editor.setReadOnly(#{!(@is_editable)});
 @@ data_source
 .content
-  form method='post' action=url("/d/#{@data_source.id}")
+  form id='saveDataSource' method='post' action=url("/d/#{@data_source.id}")
     p ="data source name:"
     input type='text' name='data_source[name]' placeholder='meaningful name' readonly=!(@is_editable) value=@data_source.name
     p ="data source type:"
@@ -331,8 +333,8 @@ html
         input type='checkbox' name='data_source[is_shared]' readonly=!(@is_editable) value=1
       ="  share this data source with others"
     br
-    input class="button blue" type='submit' disabled=!(@is_editable) value='save'
+    a onclick="$('#saveDataSource').submit(); return false;" href="#" save
   - if (@user.data_sources_editable.include?(@data_source))
-    form method='post' action=url("/d/#{@data_source.id}")
+    form id='deleteDataSource' method='post' action=url("/d/#{@data_source.id}")
       input type='hidden' name='_method' value='delete'
-      input class="button blue" type='submit' value='delete'
+      a onclick="$('#deleteDataSource').submit(); return false;" href="#" delete
